@@ -129,4 +129,601 @@
        <p id="game-subject" class="font-bold text-teal-700 mb-1"></p>
        <h1 id="game-title" class="brand font-extrabold text-2xl sm:text-3xl mb-5"></h1>
        <div class="flex justify-between gap-3 font-bold mb-2">
-        <span i
+        <span id="question-number"></span><span id="live-score" aria-live="polite"></span>
+       </div>
+       <div id="progress-track" class="progress-track mb-6" role="progressbar" aria-label="Kemajuan soal" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+        <div id="progress-fill" class="progress-fill"></div>
+       </div>
+       <p id="question-topic" class="inline-block rounded-full px-3 py-1 mb-4 text-sm font-extrabold bg-teal-50 text-teal-800"></p>
+       <h2 id="question-text" class="font-extrabold text-xl sm:text-2xl leading-snug mb-6"></h2>
+       <div id="answers" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+       <div id="feedback" class="rounded-2xl p-5 mt-6" aria-live="polite" hidden="">
+        <p id="feedback-heading" class="font-extrabold text-lg mb-1"></p>
+        <p id="feedback-answer" class="font-bold mb-1"></p>
+        <p id="feedback-explanation"></p>
+       </div><button id="next-question" data-template-id="next-button" type="button" class="canva-button btn text-white mt-6" style="background: rgb(25, 110, 87); color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 16px;" hidden="">LANJUT KE SOAL BERIKUTNYA</button>
+      </article>
+     </section>
+     <section id="result-screen" hidden="">
+      <article class="panel bg-white p-6 sm:p-9 appear"><span class="text-5xl" aria-hidden="true">🎉</span>
+       <p id="result-subject" class="font-bold text-teal-700 mt-4"></p>
+       <h1 id="result-title" class="brand font-extrabold text-3xl sm:text-4xl my-3"></h1>
+       <div class="rounded-2xl p-5 my-5" style="background:#dceeff">
+        <p id="result-score" class="font-extrabold text-3xl sm:text-4xl"></p>
+        <p id="result-counts" class="font-bold mt-2"></p>
+       </div>
+       <p id="result-message" class="font-bold mb-6"></p>
+       <h2 data-template-id="review-heading" class="canva-text font-extrabold mb-2" style="color: rgb(37, 53, 75); font-weight: 800; font-style: normal; font-size: 24px;">Yang bisa dipelajari kembali</h2>
+       <p id="result-review" class="leading-relaxed mb-7"></p>
+       <div class="flex flex-wrap gap-3 mobile-stack"><button id="remedial-button" data-template-id="remedial-button" type="button" class="canva-button btn text-white" style="background: rgb(118, 84, 23); color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 16px;" hidden="">COBA LAGI SOAL YANG SALAH</button> <button id="retry-button" type="button" class="btn text-white" style="background:#196e57"><span id="retry-label"></span></button> <button id="other-button" type="button" class="btn bg-amber-100"><span id="other-label"></span></button> <button id="result-home" data-template-id="result-home-button" type="button" class="canva-button btn bg-slate-100" style="background: rgb(241, 245, 249); color: rgb(37, 53, 75); font-weight: 800; font-style: normal; font-size: 16px;">KEMBALI KE BERANDA</button>
+       </div>
+      </article>
+     </section>
+     <p id="app-error" class="rounded-xl bg-red-50 text-red-900 p-4 mt-5 font-bold" role="alert" hidden=""></p>
+    </main>
+    <footer class="mt-10 pt-8 pb-5 text-center border-t border-slate-200/70">
+     <p data-template-id="shop-footer-title" class="canva-text font-extrabold mb-4" style="color: rgb(37, 53, 75); font-weight: 800; font-style: normal; font-size: 20px;">KUNJUNGI TOKO KAMI</p>
+     <div class="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-3 max-w-md mx-auto"><a data-template-id="shoppee-link" class="canva-button btn text-white no-underline flex-1" style="background: rgb(238, 77, 45); color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 16px;" href="https://id.shp.ee/znMqpxZQ" target="_blank" rel="noopener noreferrer">SHOPEE</a> <a data-template-id="lynk-link" class="canva-button btn text-white no-underline flex-1" style="background: rgb(109, 74, 255); color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 16px;" href="https://lynk.id/rikearinda" target="_blank" rel="noopener noreferrer">lynk.id</a>
+     </div>
+     <p data-template-id="footer-note" class="canva-text mt-4" style="color: rgb(82, 100, 122); font-weight: 400; font-style: normal; font-size: 16px;">Belajar pelan-pelan, berani mencoba, dan tetap semangat! 🌈</p>
+    </footer>
+   </div>
+  </div>
+  <script>
+"use strict";
+const $=id=>document.getElementById(id);
+const subjects={
+  fiqih:{name:"FIQIH",icon:"🕌",chapters:[
+    ["adzan","Adzan dan Iqamah","Kenali panggilan shalat, tanda dimulainya jamaah, dan cara menjawab adzan.","Membedakan adzan dan iqamah serta bersikap baik ketika mendengarnya."],
+    ["shalat","Ketentuan Shalat Fardlu","Pelajari lima waktu shalat, rakaat, persiapan, gerakan, dan hal yang membatalkan shalat.","Mengenali aturan dasar shalat dan berlatih bersama guru."]
+  ]},
+  quran:{name:"AL-QUR'AN HADIS",icon:"📖",chapters:[
+    ["hijaiyah","Menulis Huruf Hijaiyah","Kenali arah tulisan Arab dan bentuk huruf terpisah maupun bersambung.","Mengamati bentuk huruf dan berlatih menulis bersama guru."],
+    ["gunnah","Hukum Bacaan Gunnah","Kenali bacaan dengung pada nun atau mim bertasydid.","Mengenali tanda dan menirukan dengung dengan bimbingan guru."],
+    ["fil","Surah Al-Fil","Pelajari kisah pasukan bergajah dan pesan agar tidak sombong.","Memahami kekuasaan Allah serta memilih perilaku rendah hati."],
+    ["humazah","Surah Al-Humazah","Pelajari pesan untuk tidak mencela atau merendahkan orang lain.","Menjaga ucapan dan menghargai teman."],
+    ["asr","Surah Al-‘Asr","Pelajari pentingnya waktu, iman, amal baik, kebenaran, dan kesabaran.","Menggunakan waktu dengan baik dan menasihati dengan santun."],
+    ["takatsur","Surah At-Takatsur","Pelajari pesan agar tidak bermegah-megahan dan selalu bersyukur.","Memilih hidup sederhana dan mau berbagi."],
+    ["hadis","Hadis tentang Keutamaan Belajar Al-Qur’an","Pelajari pesan tentang belajar dan mengajarkan Al-Qur’an tanpa menebak teks hadis.","Rajin belajar dan berbagi ilmu yang sudah dipahami dengan benar."]
+  ]},
+  akidah:{name:"AKIDAH AKHLAK",icon:"🤝",chapters:[
+    ["taawudz","Kalimat Thayyibah Ta’awudz","Ta’awudz adalah permohonan perlindungan kepada Allah.","Mengingat Allah sebelum membaca Al-Qur’an dan menjauhi keburukan."],
+    ["asmaul","Asmaul Husna: Al-Waliy dan Al-Hafizh","Kenali makna sederhana kedua nama Allah dan contoh sikap menjaga.","Memohon perlindungan Allah, menjaga amanah, dan menolong."],
+    ["terpuji","Akhlak Terpuji","Berlatih rendah hati, berterima kasih, serta menjaga adab bersin dan menguap.","Mempraktikkan perilaku santun di rumah dan sekolah."],
+    ["tercela","Akhlak Tercela","Kenali egois, berkata kasar, dan berbohong beserta cara memperbaikinya.","Berkata jujur, bergiliran, dan meminta maaf."],
+    ["nuh","Kisah Keteladanan Nabi Nuh AS","Nabi Nuh AS mengajak kaumnya kepada kebaikan dengan sabar.","Meneladani kesabaran, ketaatan, dan keteguhan berbuat baik."]
+  ]},
+  arab:{name:"BAHASA ARAB",icon:"📗",chapters:[
+    ["sekolah","الدَّرْسُ الأَوَّلُ: فِي الْمَدْرَسَةِ / Di Sekolah","Kosakata sekolah, tempat di sekolah, serta ungkapan sederhana saat belajar.","Mengenali kata tentang sekolah dan memahami percakapan pendek."],
+    ["alat","الدَّرْسُ الثَّانِي: أَدَوَاتُ الْمَدْرَسَةِ / Peralatan Sekolah","Nama buku, pena, pensil, tas, penghapus, penggaris, papan tulis, dan perlengkapan belajar.","Mencocokkan nama alat sekolah dengan benda dan kegunaannya."],
+    ["pakaian","الدَّرْسُ الثَّالِثُ: الْمَلَابِسُ / Pakaian","Nama pakaian sederhana, kata tunjuk dasar, dan ungkapan pendek.","Mengenali nama pakaian dan memilih ungkapan yang tepat."],
+    ["rumah","الدَّرْسُ الرَّابِعُ: الْبَيْتُ وَالْغُرَفُ / Rumah dan Ruangan","Nama rumah, kamar, ruang belajar, ruang tamu, dan benda sederhana di dalamnya.","Mengenali ruangan rumah dan benda yang biasa ada di dalamnya."]
+  ]}
+};
+
+/* Format: topik|pertanyaan|jawaban|pengecoh 1|pengecoh 2|pengecoh 3|pembahasan.
+   Semua teks Arab pada pertanyaan diberi petunjuk Indonesia. */
+const arabRaw={
+sekolah:[
+`Kosakata|Apa arti الْمَدْرَسَةُ (tempat belajar)?|Sekolah|Rumah|Tas|Baju|الْمَدْرَسَةُ berarti sekolah.`,
+`Kosakata|Pilih tulisan Arab untuk “sekolah”.|الْمَدْرَسَةُ|الْبَيْتُ|الْكِتَابُ|الْقَلَمُ|Sekolah disebut الْمَدْرَسَةُ.`,
+`Tempat|Apa arti الْفَصْلُ dalam lingkungan sekolah?|Kelas|Kamar tidur|Tas|Sepatu|الْفَصْلُ berarti kelas.`,
+`Situasi|Kamu masuk ruang belajar bersama teman. Kata Arab untuk “kelas” ialah ...|الْفَصْلُ|الْبَيْتُ|الْمِمْحَاةُ|الْقَمِيصُ|Ruang kelas disebut الْفَصْلُ.`,
+`Kosakata|Apa arti الْمُعَلِّمُ (orang yang mengajar)?|Guru laki-laki|Murid laki-laki|Penjaga rumah|Teman bermain|الْمُعَلِّمُ berarti guru laki-laki.`,
+`Kosakata|Apa arti الْمُعَلِّمَةُ (orang yang mengajar)?|Guru perempuan|Murid perempuan|Ibu di rumah|Teman bermain|الْمُعَلِّمَةُ berarti guru perempuan.`,
+`Membedakan|Manakah kata untuk “guru perempuan”?|الْمُعَلِّمَةُ|الْمُعَلِّمُ|الْفَصْلُ|الْبَيْتُ|Perhatikan akhiran pada الْمُعَلِّمَةُ.`,
+`Membedakan|Manakah kata untuk “guru laki-laki”?|الْمُعَلِّمُ|الْمُعَلِّمَةُ|الْمَدْرَسَةُ|الْحَقِيبَةُ|الْمُعَلِّمُ berarti guru laki-laki.`,
+`Kosakata|Apa arti تِلْمِيذٌ (anak yang belajar)?|Murid laki-laki|Guru laki-laki|Buku|Kelas|تِلْمِيذٌ berarti murid laki-laki.`,
+`Kosakata|Apa arti تِلْمِيذَةٌ (anak yang belajar)?|Murid perempuan|Guru perempuan|Pena|Kelas|تِلْمِيذَةٌ berarti murid perempuan.`,
+`Dialog|Guru bertanya “أَيْنَ الْكِتَابُ؟” Artinya guru menanyakan ...|Di mana buku?|Siapa guru?|Apa warna tas?|Kapan pulang?|أَيْنَ digunakan untuk menanyakan tempat.`,
+`Pertanyaan|Apa arti أَيْنَ dalam pertanyaan sederhana?|Di mana|Siapa|Berapa|Mengapa|أَيْنَ berarti “di mana”.`,
+`Ungkapan|Jika menunjuk buku sambil bertanya “Apa ini?”, pilih ungkapan ...|مَا هَذَا؟|أَيْنَ الْبَيْتُ؟|مَا هَذِهِ؟|هَذِهِ حَقِيبَةٌ|مَا هَذَا؟ adalah pertanyaan dasar untuk benda yang ditunjuk dengan هَذَا.`,
+`Ungkapan|Kalimat mana berarti “Ini sebuah buku”?|هَذَا كِتَابٌ|هَذِهِ حَقِيبَةٌ|مَا هَذَا؟|أَيْنَ الْفَصْلُ؟|هَذَا كِتَابٌ berarti ini sebuah buku.`,
+`Situasi|Kamu ingin menanyakan letak kelas. Pilih pertanyaan ...|أَيْنَ الْفَصْلُ؟|مَا هَذَا؟|هَذَا كِتَابٌ|هَذِهِ حَقِيبَةٌ|أَيْنَ الْفَصْلُ؟ berarti “Di mana kelas?”`,
+`Memahami|Dalam kalimat “هَذَا كِتَابٌ”, benda yang disebut ialah ...|Buku|Tas|Rumah|Baju|كِتَابٌ berarti buku.`,
+`Memahami|Dalam “أَيْنَ الْمَدْرَسَةُ؟”, tempat yang ditanyakan ialah ...|Sekolah|Rumah|Kamar|Toko|الْمَدْرَسَةُ berarti sekolah.`,
+`Pasangan|Pasangan manakah yang tepat?|الْفَصْلُ — kelas|الْفَصْلُ — tas|الْمَدْرَسَةُ — sepatu|الْمُعَلِّمُ — buku|الْفَصْلُ adalah kelas.`,
+`Kegiatan|Di sekolah, anak membaca buku. Kata Arab untuk “buku” adalah ...|كِتَابٌ|بَيْتٌ|قَمِيصٌ|حِذَاءٌ|كِتَابٌ berarti sebuah buku.`,
+`Bacaan ringan|Baca “الْمَدْرَسَةُ”. Pilih maknanya dalam kalimat “Aku pergi ke ...”.|Sekolah|Kamar tidur|Ruang tamu|Lemari|الْمَدْرَسَةُ berarti sekolah.`,
+`Dialog|A: “مَا هَذَا؟” B: “هَذَا كِتَابٌ”. Apa benda yang ditunjuk B?|Buku|Tas|Pensil|Baju|Jawaban B menyebut كِتَابٌ, yaitu buku.`,
+`Membedakan|Guru menunjuk sekolah, bukan kelas. Pilih kata yang sesuai.|الْمَدْرَسَةُ|الْفَصْلُ|الْمِسْطَرَةُ|الْغُرْفَةُ|الْمَدْرَسَةُ berarti sekolah; الْفَصْلُ berarti kelas.`
+],
+alat:[
+`Kosakata|Apa arti كِتَابٌ?|Buku|Pena|Tas|Penggaris|كِتَابٌ berarti buku.`,
+`Kosakata|Pilih tulisan Arab untuk “pena”.|قَلَمٌ|كِتَابٌ|حَقِيبَةٌ|مِمْحَاةٌ|قَلَمٌ berarti pena atau alat tulis.`,
+`Kosakata|Apa arti قَلَمُ رَصَاصٍ?|Pensil|Papan tulis|Tas|Baju|قَلَمُ رَصَاصٍ berarti pensil.`,
+`Kosakata|Apa arti حَقِيبَةٌ?|Tas|Buku|Penghapus|Meja|حَقِيبَةٌ berarti tas.`,
+`Kosakata|Pilih tulisan Arab untuk “penghapus”.|مِمْحَاةٌ|مِسْطَرَةٌ|سَبُّورَةٌ|كِتَابٌ|مِمْحَاةٌ berarti penghapus.`,
+`Kosakata|Apa arti مِسْطَرَةٌ?|Penggaris|Penghapus|Pena|Tas|مِسْطَرَةٌ berarti penggaris.`,
+`Kosakata|Pilih tulisan Arab untuk “papan tulis”.|سَبُّورَةٌ|حَقِيبَةٌ|مِمْحَاةٌ|مِسْطَرَةٌ|سَبُّورَةٌ berarti papan tulis.`,
+`Benda|Alat untuk menghapus tulisan pensil disebut ... dalam bahasa Arab.|مِمْحَاةٌ|مِسْطَرَةٌ|كِتَابٌ|حَقِيبَةٌ|Penghapus ialah مِمْحَاةٌ.`,
+`Benda|Alat untuk membuat garis lurus disebut ...|مِسْطَرَةٌ|مِمْحَاةٌ|حَقِيبَةٌ|سَبُّورَةٌ|Penggaris ialah مِسْطَرَةٌ.`,
+`Benda|Tempat menyimpan buku untuk dibawa ke sekolah ialah ...|حَقِيبَةٌ|سَبُّورَةٌ|مِمْحَاةٌ|مِسْطَرَةٌ|Tas disebut حَقِيبَةٌ.`,
+`Membedakan|Pilih pasangan yang benar.|مِمْحَاةٌ — penghapus|مِمْحَاةٌ — penggaris|مِسْطَرَةٌ — tas|سَبُّورَةٌ — pensil|مِمْحَاةٌ adalah penghapus.`,
+`Membedakan|Kata mana berarti “penggaris”, bukan “penghapus”?|مِسْطَرَةٌ|مِمْحَاةٌ|قَلَمٌ|كِتَابٌ|Perhatikan perbedaan مِسْطَرَةٌ dan مِمْحَاةٌ.`,
+`Ungkapan|Lengkapi “هَذَا ...” agar berarti “Ini sebuah buku”.|كِتَابٌ|حَقِيبَةٌ|مِمْحَاةٌ|مِسْطَرَةٌ|Bentuk kalimatnya هَذَا كِتَابٌ.`,
+`Ungkapan|Pilih kalimat “Ini sebuah tas”.|هَذِهِ حَقِيبَةٌ|هَذَا كِتَابٌ|مَا هَذَا؟|أَيْنَ الْبَيْتُ؟|هَذِهِ حَقِيبَةٌ berarti ini sebuah tas.`,
+`Pertanyaan|Saat menunjuk tas dan bertanya “Apa ini?”, pilih ...|مَا هَذِهِ؟|مَا هَذَا؟|أَيْنَ الْفَصْلُ؟|هَذَا كِتَابٌ|Untuk حَقِيبَةٌ, contoh pertanyaannya مَا هَذِهِ؟`,
+`Dialog|A: “مَا هَذِهِ؟” B: “هَذِهِ حَقِيبَةٌ”. Apa bendanya?|Tas|Pena|Buku|Papan tulis|حَقِيبَةٌ berarti tas.`,
+`Situasi|Guru menulis di papan tulis. Pilih nama Arab bendanya.|سَبُّورَةٌ|مِمْحَاةٌ|مِسْطَرَةٌ|حَقِيبَةٌ|Papan tulis disebut سَبُّورَةٌ.`,
+`Situasi|Ali membawa alat tulis berisi grafit. Itu pensil, yaitu ...|قَلَمُ رَصَاصٍ|سَبُّورَةٌ|حَقِيبَةٌ|مِمْحَاةٌ|قَلَمُ رَصَاصٍ berarti pensil.`,
+`Pasangan|Manakah pasangan benda dan arti yang tepat?|سَبُّورَةٌ — papan tulis|سَبُّورَةٌ — tas|كِتَابٌ — sepatu|قَلَمٌ — rumah|سَبُّورَةٌ berarti papan tulis.`,
+`Bacaan ringan|Baca “قَلَمٌ”. Benda mana yang paling sesuai?|Pena|Baju|Kamar|Ruang tamu|قَلَمٌ berarti pena atau alat tulis.`,
+`Melengkapi|“هَذِهِ ...” berarti “Ini sebuah tas”. Kata yang hilang ialah ...|حَقِيبَةٌ|كِتَابٌ|قَلَمٌ|بَيْتٌ|Tas disebut حَقِيبَةٌ.`,
+`Membedakan|Manakah nama Arab untuk pensil, bukan pena secara umum?|قَلَمُ رَصَاصٍ|قَلَمٌ|كِتَابٌ|سَبُّورَةٌ|قَلَمُ رَصَاصٍ menyebut pensil secara khusus.`
+],
+pakaian:[
+`Kosakata|Apa arti الْمَلَابِسُ?|Pakaian|Sekolah|Ruangan|Alat tulis|الْمَلَابِسُ berarti pakaian.`,
+`Kosakata|Apa arti قَمِيصٌ?|Kemeja|Sepatu|Tas|Penggaris|قَمِيصٌ berarti kemeja.`,
+`Kosakata|Pilih tulisan Arab untuk “sepatu”.|حِذَاءٌ|قَمِيصٌ|كِتَابٌ|بَيْتٌ|حِذَاءٌ berarti sepatu.`,
+`Kosakata|Apa arti سِرْوَالٌ?|Celana|Kemeja|Topi|Tas|سِرْوَالٌ berarti celana.`,
+`Kosakata|Pilih tulisan Arab untuk “topi”.|قُبَّعَةٌ|حِذَاءٌ|سِرْوَالٌ|قَمِيصٌ|قُبَّعَةٌ berarti topi.`,
+`Kosakata|Apa arti جَوْرَبٌ?|Kaus kaki|Kemeja|Penghapus|Buku|جَوْرَبٌ berarti kaus kaki.`,
+`Situasi|Benda yang dipakai di kaki ketika berjalan adalah sepatu. Pilih kata Arabnya.|حِذَاءٌ|قَمِيصٌ|قُبَّعَةٌ|سِرْوَالٌ|Sepatu disebut حِذَاءٌ.`,
+`Situasi|Benda yang dipakai di kepala adalah topi. Pilih kata Arabnya.|قُبَّعَةٌ|جَوْرَبٌ|سِرْوَالٌ|حِذَاءٌ|Topi disebut قُبَّعَةٌ.`,
+`Situasi|Benda yang dipakai di kaki sebelum sepatu adalah kaus kaki. Pilih ...|جَوْرَبٌ|قَمِيصٌ|قُبَّعَةٌ|حِذَاءٌ|Kaus kaki disebut جَوْرَبٌ.`,
+`Membedakan|Kata mana berarti “celana”, bukan “kemeja”?|سِرْوَالٌ|قَمِيصٌ|قُبَّعَةٌ|جَوْرَبٌ|سِرْوَالٌ berarti celana.`,
+`Membedakan|Kata mana berarti “kemeja”, bukan “celana”?|قَمِيصٌ|سِرْوَالٌ|حِذَاءٌ|جَوْرَبٌ|قَمِيصٌ berarti kemeja.`,
+`Pasangan|Pilih pasangan kata dan benda yang tepat.|جَوْرَبٌ — kaus kaki|جَوْرَبٌ — kemeja|حِذَاءٌ — topi|قَمِيصٌ — sepatu|جَوْرَبٌ berarti kaus kaki.`,
+`Ungkapan|Pilih kalimat sederhana untuk menunjukkan sebuah kemeja: “Ini kemeja.”|هَذَا قَمِيصٌ|هَذِهِ حَقِيبَةٌ|أَيْنَ الْبَيْتُ؟|هَذَا كِتَابٌ|هَذَا قَمِيصٌ berarti ini kemeja.`,
+`Ungkapan|Pilih kalimat sederhana untuk menunjukkan topi: “Ini topi.”|هَذِهِ قُبَّعَةٌ|هَذَا قَمِيصٌ|هَذَا كِتَابٌ|أَيْنَ الْفَصْلُ؟|هَذِهِ قُبَّعَةٌ berarti ini topi.`,
+`Dialog|A: “مَا هَذَا؟” B: “هَذَا حِذَاءٌ”. Apa benda yang disebut B?|Sepatu|Topi|Tas|Celana|حِذَاءٌ berarti sepatu.`,
+`Dialog|A: “مَا هَذِهِ؟” B: “هَذِهِ قُبَّعَةٌ”. Apa benda yang disebut B?|Topi|Kemeja|Sepatu|Buku|قُبَّعَةٌ berarti topi.`,
+`Memahami|Dalam “هَذَا قَمِيصٌ”, kata yang berarti kemeja ialah ...|قَمِيصٌ|هَذَا|حِذَاءٌ|قُبَّعَةٌ|قَمِيصٌ adalah kemeja.`,
+`Melengkapi|Lengkapi “هَذَا ...” agar berarti “Ini sepatu”.|حِذَاءٌ|قُبَّعَةٌ|حَقِيبَةٌ|مِمْحَاةٌ|هَذَا حِذَاءٌ berarti ini sepatu.`,
+`Bacaan ringan|Baca “سِرْوَالٌ”. Pilih arti yang tepat.|Celana|Topi|Sepatu|Kaus kaki|سِرْوَالٌ berarti celana.`,
+`Situasi|Anak mengenakan pakaian bagian atas berupa kemeja. Pilih kata yang sesuai.|قَمِيصٌ|سِرْوَالٌ|جَوْرَبٌ|حِذَاءٌ|Kemeja disebut قَمِيصٌ.`,
+`Pasangan|Manakah pasangan yang benar?|قُبَّعَةٌ — topi|قُبَّعَةٌ — celana|سِرْوَالٌ — kaus kaki|حِذَاءٌ — kemeja|قُبَّعَةٌ berarti topi.`,
+`Membedakan|Pilih nama benda yang dipakai di kaki, tetapi bukan sepatu.|جَوْرَبٌ|حِذَاءٌ|قَمِيصٌ|قُبَّعَةٌ|جَوْرَبٌ ialah kaus kaki.`
+],
+rumah:[
+`Kosakata|Apa arti الْبَيْتُ?|Rumah|Sekolah|Tas|Baju|الْبَيْتُ berarti rumah.`,
+`Kosakata|Pilih tulisan Arab untuk “kamar”.|غُرْفَةٌ|بَيْتٌ|كِتَابٌ|قَلَمٌ|غُرْفَةٌ berarti kamar atau ruangan.`,
+`Kosakata|Apa arti غُرْفَةُ النَّوْمِ?|Kamar tidur|Ruang tamu|Kelas|Sekolah|غُرْفَةُ النَّوْمِ berarti kamar tidur.`,
+`Kosakata|Apa arti غُرْفَةُ الْجُلُوسِ?|Ruang duduk atau ruang tamu|Kamar tidur|Papan tulis|Tas|غُرْفَةُ الْجُلُوسِ adalah ruang duduk.`,
+`Kosakata|Pilih ungkapan Arab untuk “ruang belajar”.|غُرْفَةُ الدِّرَاسَةِ|غُرْفَةُ النَّوْمِ|غُرْفَةُ الْجُلُوسِ|الْمَدْرَسَةُ|غُرْفَةُ الدِّرَاسَةِ berarti ruang belajar.`,
+`Kosakata|Apa arti بَابٌ?|Pintu|Jendela|Tempat tidur|Kursi|بَابٌ berarti pintu.`,
+`Kosakata|Apa arti نَافِذَةٌ?|Jendela|Pintu|Meja|Buku|نَافِذَةٌ berarti jendela.`,
+`Kosakata|Apa arti سَرِيرٌ?|Tempat tidur|Kursi|Papan tulis|Tas|سَرِيرٌ berarti tempat tidur.`,
+`Kosakata|Apa arti كُرْسِيٌّ?|Kursi|Rumah|Kamar|Pena|كُرْسِيٌّ berarti kursi.`,
+`Kosakata|Apa arti مَكْتَبٌ sebagai benda di ruang belajar?|Meja belajar|Sepatu|Topi|Penghapus|مَكْتَبٌ dapat berarti meja belajar.`,
+`Situasi|Tempat tidur biasanya ada di kamar tidur. Pilih nama Arab kamar itu.|غُرْفَةُ النَّوْمِ|غُرْفَةُ الْجُلُوسِ|الْفَصْلُ|الْمَدْرَسَةُ|غُرْفَةُ النَّوْمِ berarti kamar tidur.`,
+`Situasi|Keluarga duduk menerima tamu. Ruang yang paling sesuai ialah ...|غُرْفَةُ الْجُلُوسِ|غُرْفَةُ النَّوْمِ|الْفَصْلُ|الْمَدْرَسَةُ|غُرْفَةُ الْجُلُوسِ adalah ruang duduk.`,
+`Situasi|Anak mengerjakan tugas di ruang belajar. Pilih nama ruangnya.|غُرْفَةُ الدِّرَاسَةِ|غُرْفَةُ النَّوْمِ|غُرْفَةُ الْجُلُوسِ|الْفَصْلُ|Ruang belajar disebut غُرْفَةُ الدِّرَاسَةِ.`,
+`Membedakan|Pilih kata untuk “jendela”, bukan “pintu”.|نَافِذَةٌ|بَابٌ|سَرِيرٌ|كُرْسِيٌّ|نَافِذَةٌ berarti jendela.`,
+`Membedakan|Pilih kata untuk “pintu”, bukan “jendela”.|بَابٌ|نَافِذَةٌ|مَكْتَبٌ|كُرْسِيٌّ|بَابٌ berarti pintu.`,
+`Pasangan|Pasangan manakah yang tepat?|سَرِيرٌ — tempat tidur|سَرِيرٌ — kursi|كُرْسِيٌّ — pintu|بَابٌ — jendela|سَرِيرٌ berarti tempat tidur.`,
+`Pertanyaan|“أَيْنَ الْبَيْتُ؟” menanyakan letak ...|Rumah|Sekolah|Kemeja|Penghapus|الْبَيْتُ berarti rumah.`,
+`Pertanyaan|Dalam “أَيْنَ غُرْفَةُ النَّوْمِ؟”, apa yang dicari?|Kamar tidur|Ruang kelas|Tas|Sepatu|Pertanyaan itu mencari kamar tidur.`,
+`Ungkapan|Pilih kalimat “Ini rumah”.|هَذَا بَيْتٌ|هَذَا كِتَابٌ|هَذِهِ حَقِيبَةٌ|مَا هَذَا؟|هَذَا بَيْتٌ berarti ini rumah.`,
+`Dialog|A: “أَيْنَ السَّرِيرُ؟” B menunjuk kamar tidur. Benda apakah yang dicari A?|Tempat tidur|Kursi|Pintu|Meja|السَّرِيرُ berarti tempat tidur.`,
+`Bacaan ringan|Baca “كُرْسِيٌّ”. Benda untuk duduk yang dimaksud ialah ...|Kursi|Meja|Tempat tidur|Pintu|كُرْسِيٌّ berarti kursi.`,
+`Membedakan|Manakah kata untuk ruang belajar, bukan kamar tidur?|غُرْفَةُ الدِّرَاسَةِ|غُرْفَةُ النَّوْمِ|غُرْفَةُ الْجُلُوسِ|الْبَيْتُ|الدِّرَاسَةِ berkaitan dengan belajar.`
+]};
+
+/* Materi lama tetap memiliki bab, latihan, ujian, dan alur yang terpisah.
+   Setiap baris fakta menghasilkan dua soal dengan konteks berbeda. */
+const legacyFacts={
+adzan:[
+["Penanda masuk waktu shalat","Adzan","Iqamah","Salam","Bel sekolah"],
+["Tanda jamaah segera dimulai","Iqamah","Adzan","Istirahat","Salam penutup"],
+["Sikap ketika adzan terdengar","Mendengarkan dengan hormat","Berteriak","Mengejek muazin","Mengganggu teman"],
+["Urutan sebelum shalat berjamaah","Adzan lalu iqamah","Iqamah lalu adzan","Shalat lalu adzan","Salam lalu iqamah"],
+["Persiapan setelah mendengar adzan","Bersuci dan bersiap shalat","Terus bermain","Membuat gaduh","Mengganggu jamaah"],
+["Yang dirapikan ketika iqamah terdengar","Barisan shalat","Rak mainan","Meja makan","Lapangan"],
+["Jawaban untuk lafaz adzan biasa","Menirukan lafaz muazin","Bertepuk tangan","Berteriak","Diam sambil bercanda"],
+["Jawaban khusus untuk dua seruan Hayya","Laa hawla wa laa quwwata illaa billaah","Mengulang semua seruan Hayya","Tepuk tangan","Mengucapkan salam"],
+["Cara mempelajari doa setelah adzan","Belajar bersama guru","Mengarang lafal","Menebak teks","Mengabaikan sumber"],
+["Ajakan santun ketika adzan terdengar","Yuk, dengarkan adzan dan bersiap shalat","Ayo membuat gaduh","Mari mengejek muazin","Jangan bersiap"]
+],
+shalat:[
+["Jumlah shalat fardlu sehari semalam","Lima","Dua","Tiga","Enam"],
+["Jumlah rakaat Subuh","Dua","Tiga","Empat","Lima"],
+["Jumlah rakaat Magrib","Tiga","Dua","Empat","Lima"],
+["Jumlah rakaat Isya","Empat","Dua","Tiga","Lima"],
+["Shalat fardlu pada waktu fajar","Subuh","Asar","Magrib","Isya"],
+["Shalat fardlu setelah matahari terbenam","Magrib","Subuh","Zuhur","Asar"],
+["Shalat fardlu pada siang hari","Zuhur","Subuh","Magrib","Isya"],
+["Contoh syarat sah shalat","Bersuci dari hadas","Membawa pensil","Memakai sepatu","Memilih warna sajadah"],
+["Arah yang dihadapi saat shalat","Kiblat","Pintu terdekat","Teman","Jendela"],
+["Urutan gerakan dalam satu rakaat","Rukuk lalu sujud","Sujud lalu rukuk","Salam lalu rukuk","Sujud lalu salam"]
+],
+hijaiyah:[
+["Arah baca baris tulisan Arab","Dari kanan ke kiri","Dari kiri ke kanan","Dari bawah ke atas","Secara acak"],
+["Posisi huruf paling depan dalam kata","Awal","Tengah","Akhir","Di luar kata"],
+["Posisi huruf di antara awal dan akhir","Tengah","Awal","Akhir","Di luar kata"],
+["Posisi huruf paling belakang","Akhir","Awal","Tengah","Di luar kata"],
+["Huruf yang ditulis sendiri","Bentuk terpisah","Bentuk tengah","Angka","Tanda Latin"],
+["Huruf yang terhubung menurut aturan","Bentuk bersambung","Bentuk terpisah","Angka","Tanda tanya"],
+["Alasan mengamati huruf di beberapa posisi","Bentuknya dapat berubah","Warnanya menjadi angka","Huruf menghilang","Buku berubah ukuran"],
+["Langkah saat ragu menyambung huruf","Bertanya kepada guru","Menebak terus","Menghapus semua huruf","Mengganggu teman"],
+["Cara memperbaiki tulisan yang belum rapi","Berlatih perlahan","Berhenti belajar","Menulis terbalik","Mencoret buku teman"],
+["Yang diperhatikan sebelum menyalin huruf","Bentuk dan arah goresan","Harga pensil","Warna meja","Jumlah kursi"]
+],
+gunnah:[
+["Nama bacaan dengan suara dengung","Gunnah","Iqamah","Salam","Adzan"],
+["Huruf bertasydid dalam materi gunnah","Nun dan mim","Alif dan lam","Ra dan fa","Ba dan sin"],
+["Tanda yang dicari pada nun dan mim","Tasydid","Tanda tanya","Nomor halaman","Warna sampul"],
+["Bacaan nun bertasydid","Dengung","Teriakan","Diam","Tepuk tangan"],
+["Bacaan mim bertasydid","Dengung","Teriakan","Diam","Tepuk tangan"],
+["Cara mengikuti contoh dengung guru","Menyimak lalu menirukan","Membaca asal cepat","Mengganti huruf","Berbicara sendiri"],
+["Jika dengung belum terdengar jelas","Berlatih lebih perlahan","Membaca semakin asal","Menghapus huruf","Berhenti belajar"],
+["Sikap kepada teman yang sedang berlatih","Mendukung dengan sabar","Mengejek","Membuat gaduh","Menutup bukunya"],
+["Jika contoh bacaan belum jelas","Memeriksa bersama guru","Mengarang tulisan","Menghapus tanda","Menebak terus"],
+["Alasan memperhatikan tanda baca","Agar bacaan lebih tepat","Agar halaman lebih tebal","Agar warna berubah","Agar huruf hilang"]
+],
+fil:[
+["Arti nama Al-Fil","Gajah","Waktu","Harta","Celaan"],
+["Pasukan dalam kisah Al-Fil","Pasukan bergajah","Pasukan berkapal","Pasukan berkereta","Pasukan bersepeda"],
+["Pesan tentang kekuasaan dalam Al-Fil","Allah Mahakuasa","Manusia Mahakuasa","Pamer selalu baik","Kekuatan manusia tanpa batas"],
+["Sikap setelah menang lomba","Tetap rendah hati","Mengejek peserta lain","Merendahkan teman","Memamerkan diri"],
+["Penggunaan kekuatan yang baik","Membantu yang membutuhkan","Mengancam adik","Mengejek teman","Merebut barang"],
+["Sikap kepada teman yang kalah","Tetap menghargainya","Merendahkannya","Mengejeknya","Mengusirnya"],
+["Saat menghadapi hal sulit","Berdoa dan berusaha","Mengejek orang","Merasa paling kuat","Berhenti berbuat baik"],
+["Sikap yang berbeda dari sombong","Mengakui keterbatasan diri","Menghina orang lain","Pamer kekuatan","Menakuti teman"],
+["Saat bacaan surah belum lancar","Mengulang bersama guru","Mengarang ayat","Menebak bunyi","Mengubah urutan"],
+["Sumber memeriksa teks surah","Buku Kemenag atau guru","Tebakan sendiri","Cerita tanpa sumber","Tulisan acak"]
+],
+humazah:[
+["Perbuatan yang diperingatkan dalam Al-Humazah","Mencela orang","Membantu teman","Berbicara sopan","Meminta maaf"],
+["Setelah memberi julukan menyakitkan","Berhenti dan meminta maaf","Mengulang julukan","Mengajak teman mengejek","Tertawa keras"],
+["Sikap saat teman belum lancar membaca","Membantu dengan sabar","Menertawakan","Menyebar ejekan","Mempermalukan"],
+["Saat memiliki barang mahal","Tidak merendahkan teman","Memamerkannya untuk menghina","Mengejek barang teman","Mengusir teman"],
+["Kata yang dipilih saat berbicara","Baik dan sopan","Menyakitkan","Menghina","Kasar"],
+["Membicarakan keburukan teman untuk mengejek","Ditinggalkan","Dibanggakan","Diulang","Disebarkan"],
+["Jika telanjur berkata kasar","Meminta maaf","Menyalahkan teman","Mengulanginya","Mencari ejekan baru"],
+["Sikap kepada teman dengan tas lama","Tetap menghargainya","Mengejek tasnya","Menjauhinya","Pamer tas sendiri"],
+["Perasaan teman yang diejek","Bisa sedih atau terluka","Pasti selalu senang","Selalu ingin diejek","Tidak punya perasaan"],
+["Sumber memeriksa teks dan arti ayat","Guru atau buku Kemenag","Tebakan sendiri","Cerita karangan","Pesan acak"]
+],
+asr:[
+["Hal yang perlu dihargai menurut Al-‘Asr","Waktu","Ejekan","Kesombongan","Kemalasan"],
+["Contoh menggunakan waktu dengan baik","Belajar lalu bermain secukupnya","Bermain tanpa henti","Melupakan tugas","Mengganggu keluarga"],
+["Contoh amal baik","Menolong teman","Mengejek teman","Berbohong","Membuang waktu"],
+["Cara menasihati teman","Dengan santun","Dengan hinaan","Dengan bentakan","Dengan ancaman"],
+["Sikap saat hafalan belum lancar","Sabar berlatih","Langsung menyerah","Mengarang ayat","Mengejek teman"],
+["Sikap saat mendapat nasihat benar","Mendengarkan","Mengejek","Menutup telinga","Membentak"],
+["Cara mengerjakan tugas yang ada","Sesuai jadwal","Selalu menunda","Membuang tugas","Mengganggu teman"],
+["Arti sabar dalam belajar","Terus mencoba dengan tenang","Tidak pernah berlatih","Marah pada teman","Mengarang jawaban"],
+["Tempat memeriksa bacaan Al-‘Asr","Buku Kemenag atau guru","Ayat buatan sendiri","Tebakan","Cerita acak"],
+["Pesan Al-‘Asr","Iman, amal baik, nasihat benar, dan sabar","Pamer dan mengejek","Berlomba harta","Menghindari tugas"]
+],
+takatsur:[
+["Perilaku yang diperingatkan At-Takatsur","Bermegah-megahan","Bersyukur","Berbagi","Menolong"],
+["Saat menerima hadiah sederhana","Bersyukur dan berterima kasih","Mengeluh","Mengejek pemberi","Membuangnya"],
+["Jika memiliki pensil cadangan","Meminjamkannya jika memungkinkan","Mengejek teman","Menyembunyikannya","Pamer pensil"],
+["Sikap terhadap barang milik teman","Tidak perlu iri","Memaksa dibelikan","Mengejek","Merusaknya"],
+["Contoh menggunakan barang seperlunya","Menggunakan buku sampai selesai","Membuang buku baru","Membeli untuk pamer","Merusak barang"],
+["Hal baik untuk diperlombakan","Berbuat baik","Mengejek","Memamerkan barang","Bertengkar"],
+["Ketika mendapat tas baru","Bersyukur tanpa sombong","Menghina tas teman","Pamer terus","Meminta tas lain"],
+["Sebelum meminta barang baru","Memikirkan kebutuhan","Memikirkan cara membuat iri","Mencari teman untuk diejek","Membuang barang lama"],
+["Sikap terhadap adik yang memakai mainan lama","Berbagi dan menjaga bersama","Merebut sambil mengejek","Merusaknya","Pamer mainan"],
+["Sumber memeriksa terjemahan ayat","Buku Kemenag atau guru","Tebakan sendiri","Cerita tanpa sumber","Kalimat karangan"]
+],
+hadis:[
+["Kebiasaan sesuai keutamaan belajar Al-Qur’an","Belajar dengan tekun","Mengabaikan bacaan","Mengejek pembaca","Mengarang ayat"],
+["Setelah memahami huruf dengan benar","Membantu teman dengan sabar","Mengarang bunyi","Mengejek teman","Menyembunyikan buku"],
+["Saat guru membetulkan bacaan","Mendengarkan lalu mencoba lagi","Marah","Berhenti selamanya","Mengejek guru"],
+["Cara menyediakan waktu belajar","Berlatih teratur sesuai kemampuan","Belajar sekali lalu berhenti","Menebak huruf","Menghindari guru"],
+["Jika belum yakin pada teks hadis","Memeriksa bersama guru","Mengarang kutipan","Mengutip tebakan","Mengubah kata"],
+["Saat teman bergiliran membaca","Mendengarkan tanpa mengganggu","Berteriak","Menutup bukunya","Menertawakan"],
+["Saat belum tahu bunyi huruf","Bertanya kepada guru","Membuat bunyi sendiri","Mengajarkan tebakan","Menghapus huruf"],
+["Saat bacaan belum lancar","Berlatih lagi dengan sabar","Menyalahkan teman","Mengarang bacaan","Berhenti"],
+["Sebelum membantu teman membaca","Memastikan contohnya benar","Menebak bacaan","Mengabaikan guru","Menganggap semua huruf sama"],
+["Sumber teks hadis yang diperiksa","Buku tepercaya atau guru","Kutipan buatan","Cerita tanpa sumber","Tebakan teman"]
+],
+taawudz:[
+["Makna ta’awudz","Memohon perlindungan kepada Allah","Meminta pujian teman","Meminta barang baru","Mengumumkan bermain"],
+["Waktu yang dianjurkan membaca ta’awudz","Sebelum membaca Al-Qur’an","Saat mengejek teman","Saat membuat gaduh","Setelah mengarang ayat"],
+["Tujuan memohon perlindungan","Dari godaan buruk","Dari nasihat baik","Dari pelajaran","Dari bantuan"],
+["Jika belum hafal lafal ta’awudz","Belajar dari guru","Membuat lafal sendiri","Menebak kata","Mengubah bunyi"],
+["Sikap setelah memohon perlindungan","Berusaha menjauhi keburukan","Sengaja berbohong","Mengganggu teman","Berkata kasar"],
+["Saat ingin berkata kasar","Menahan diri dan memilih kata baik","Membentak","Mengajak mengejek","Berbohong"],
+["Urutan ketika hendak membaca","Bersiap, berta’awudz, lalu membaca","Mengejek lalu membaca","Mengarang ayat","Membentak lalu membaca"],
+["Saat guru memberi contoh lafal","Menyimak dan menirukan","Mengubah kata","Mengabaikan","Mengganggu teman"],
+["Jika menemukan dua tulisan lafal berbeda","Memeriksa bersama guru","Memilih acak","Mencampur keduanya","Menyalin tanpa bertanya"],
+["Kepada siapa memohon perlindungan","Allah","Mainan","Tas","Meja"]
+],
+asmaul:[
+["Makna sederhana Al-Waliy","Maha Melindungi","Maha Lupa","Maha Lelah","Membutuhkan bantuan"],
+["Makna sederhana Al-Hafizh","Maha Memelihara","Maha Bingung","Maha Tidur","Maha Lemah"],
+["Saat merasa takut","Memohon perlindungan Allah","Memohon kepada mainan","Memohon kepada meja","Mengejek teman"],
+["Jika dititipi buku","Menjaganya dengan baik","Merobeknya","Menyembunyikannya","Mencoretnya"],
+["Saat teman kesulitan membawa buku","Menawarkan bantuan","Menertawakan","Mengambil tanpa izin","Mengejek"],
+["Cara menjaga kelas","Membuang sampah pada tempatnya","Mencoret meja","Mengotori lantai","Merobek buku"],
+["Saat melihat lantai licin","Memberi tahu orang dewasa","Mendorong teman","Berlari di atasnya","Menyembunyikan keadaan"],
+["Jenis nama Al-Waliy dan Al-Hafizh","Asmaul Husna","Nama hari","Nama bulan","Nama permainan"],
+["Saat meminjam barang","Merawat lalu mengembalikannya","Merusaknya","Menyembunyikannya","Membuangnya"],
+["Sikap saat menolong teman","Membantu dengan aman","Menertawakan","Mengejek","Mengambil tasnya"]
+],
+terpuji:[
+["Ucapan setelah dibantu teman","Terima kasih","Pergi sana","Itu hakku","Aku tidak peduli"],
+["Makna tawadhu’","Rendah hati","Merendahkan teman","Selalu pamer","Menolak bantuan"],
+["Sikap setelah menang lomba","Menghargai peserta lain","Mengejek yang kalah","Pamer terus","Merendahkan guru"],
+["Cara menutup bersin","Dengan siku bagian dalam atau tisu","Dengan buku teman","Ke makanan","Ke wajah teman"],
+["Tempat membuang tisu bekas","Tempat sampah","Meja teman","Lantai kelas","Tas teman"],
+["Adab ketika menguap","Menutup mulut","Berteriak","Menghadap teman","Mengejek"],
+["Sikap saat selesai tugas lebih dulu","Menunggu tanpa mengejek","Mengejek teman","Berkata paling hebat","Mengambil buku teman"],
+["Ucapan kepada guru yang membantu","Terima kasih","Jangan ikut campur","Aku tidak peduli","Pergi sana"],
+["Sikap setelah dipuji","Tetap rendah hati","Menjadi sombong","Mengejek teman","Pamer terus"],
+["Alasan berterima kasih","Menghargai bantuan","Untuk pamer","Untuk mengejek","Agar mendapat hadiah"]
+],
+tercela:[
+["Arti egois","Ingin menang sendiri","Rendah hati","Sabar","Jujur"],
+["Sikap saat memakai permainan bersama","Bergiliran","Merebut","Menyembunyikan","Mengusir teman"],
+["Cara menyampaikan ketidaksetujuan","Dengan kata sopan","Dengan hinaan","Dengan ancaman","Dengan bentakan"],
+["Arti berbohong","Sengaja berkata tidak sesuai kenyataan","Bersyukur","Menolong","Bergiliran"],
+["Saat tak sengaja merusak barang teman","Mengaku dan meminta maaf","Menuduh teman lain","Menyembunyikan selamanya","Berbohong lagi"],
+["Akibat sering berbohong","Orang lain sulit percaya","Semua orang makin percaya","Tidak ada akibat","Selalu dipuji"],
+["Setelah berkata kasar","Meminta maaf dan memperbaiki ucapan","Mengulanginya","Menyalahkan teman","Mencari ejekan"],
+["Sikap dalam kerja kelompok","Mendengarkan pendapat teman","Memotong semua pembicaraan","Memaksa terus","Mengabaikan kelompok"],
+["Jika lupa mengerjakan tugas","Mengakuinya dengan jujur","Menuduh teman","Membuat cerita palsu","Menyembunyikan selamanya"],
+["Cara memperbaiki kesalahan","Mengaku, meminta maaf, lalu berubah","Berbohong lalu mengejek","Menyalahkan orang","Mengulang kesalahan"]
+],
+nuh:[
+["Nabi yang dipelajari dalam bab ini","Nabi Nuh AS","Tokoh permainan","Raja dongeng","Pahlawan rekaan"],
+["Ajakan Nabi Nuh AS","Menyembah Allah dan berbuat baik","Berbuat curang","Saling mengejek","Menjadi sombong"],
+["Teladan ketika menghadapi kesulitan","Sabar","Langsung menyerah","Mengejek","Berbohong"],
+["Kepada siapa Nabi Nuh AS taat","Allah","Ajakan buruk","Keinginan pamer","Tebakan"],
+["Saat ajakan baik belum diikuti","Tetap mengajak dengan sopan","Membentak","Mengejek","Merusak kelas"],
+["Saat tugas terasa sulit","Mencoba lagi dan meminta bantuan","Membuang tugas","Menyalahkan teman","Berhenti"],
+["Cara mengajak teman berbuat baik","Dengan sopan dan sabar","Dengan ancaman","Dengan ejekan","Dengan kemarahan"],
+["Jika cerita tentang nabi belum jelas","Memeriksa bersama guru","Langsung menyebar","Menambah cerita sendiri","Menganggap pasti benar"],
+["Arti sabar saat belajar","Tetap berusaha dengan tenang","Berhenti berusaha","Mengejek teman","Menolak nasihat"],
+["Sikap saat mendengar kisah nabi dari guru","Menyimak dengan baik","Membuat gaduh","Mengarang cerita","Mengganggu teman"]
+]};
+
+/* Dua bentuk pertanyaan atas tiap fakta mempertahankan sekurangnya 20 soal per bab lama. */
+function makeLegacyBank(chapter){
+  return legacyFacts[chapter].flatMap((f,i)=>[
+    makeQuestion(chapter,`${chapter}-a${i}`,"Pemahaman",`Pilih jawaban yang tepat: ${f[0]}.`,f[1],f.slice(2),`${f[0]}: ${f[1]}.`),
+    makeQuestion(chapter,`${chapter}-b${i}`,"Situasi",`Dalam pelajaran ${chapterTitle(chapter)}, manakah pilihan yang sesuai untuk “${f[0].toLowerCase()}”?`,f[1],f.slice(2),`Pilihan yang sesuai adalah ${f[1]}.`)
+  ]);
+}
+function chapterTitle(id){
+  for(const subject of Object.values(subjects)){const c=subject.chapters.find(x=>x[0]===id);if(c)return c[1]}
+  return id;
+}
+function makeQuestion(chapter,id,topic,prompt,correct,wrong,explanation){
+  const options=[correct,...wrong].map((text,n)=>({id:`${id}-${n}`,text}));
+  return {id,chapter,topic,prompt,options,key:`${id}-0`,explanation};
+}
+function parseArabic(chapter,rows){
+  return rows.map((row,i)=>{
+    const p=row.split("|");
+    return makeQuestion(chapter,`arab-${chapter}-${i}`,p[0],p[1],p[2],p.slice(3,6),p[6]);
+  });
+}
+const chapterBanks={};
+for(const key of Object.keys(legacyFacts))chapterBanks[key]=makeLegacyBank(key);
+for(const [key,rows] of Object.entries(arabRaw))chapterBanks[key]=parseArabic(key,rows);
+
+/* Dua puluh soal ujian Bahasa Arab ditulis tersendiri, lima dari tiap bab. */
+const arabExamRows=[
+`sekolah|Situasi sekolah|Di depan gerbang sekolah, guru menunjuk gedung tempat murid belajar. Pilih nama Arabnya.|الْمَدْرَسَةُ|الْبَيْتُ|الْفَصْلُ|الْحَقِيبَةُ|الْمَدْرَسَةُ berarti sekolah.`,
+`sekolah|Bacaan pendek|“تِلْمِيذٌ فِي الْفَصْلِ”. Dalam petunjuk “murid berada di kelas”, kata untuk kelas ialah ...|الْفَصْلِ|تِلْمِيذٌ|الْبَيْتِ|الْقَمِيصِ|الْفَصْلِ adalah bentuk kata kelas pada bacaan ini.`,
+`sekolah|Dialog|Guru menanyakan lokasi kelas. Pertanyaan pendek yang sesuai adalah ...|أَيْنَ الْفَصْلُ؟|مَا هَذَا؟|هَذَا كِتَابٌ|هَذِهِ حَقِيبَةٌ|أَيْنَ الْفَصْلُ؟ berarti “Di mana kelas?”`,
+`sekolah|Membedakan|Pada daftar warga sekolah, kata mana menunjuk guru perempuan?|الْمُعَلِّمَةُ|الْمُعَلِّمُ|تِلْمِيذٌ|الْفَصْلُ|الْمُعَلِّمَةُ berarti guru perempuan.`,
+`sekolah|Pemahaman|Seorang anak berkata “هَذَا كِتَابٌ” sambil memegang sesuatu. Ia memegang ...|Buku|Tas|Sepatu|Topi|كِتَابٌ berarti buku.`,
+`alat|Peralatan|Siti perlu menarik garis lurus pada buku. Pilih alat dalam bahasa Arab.|مِسْطَرَةٌ|مِمْحَاةٌ|حَقِيبَةٌ|سَبُّورَةٌ|مِسْطَرَةٌ berarti penggaris.`,
+`alat|Peralatan|Guru meminta benda untuk menghapus tulisan pensil. Kata yang cocok ialah ...|مِمْحَاةٌ|مِسْطَرَةٌ|كِتَابٌ|قَلَمٌ|مِمْحَاةٌ berarti penghapus.`,
+`alat|Dialog|A bertanya tentang benda untuk membawa buku. B menjawab “هَذِهِ حَقِيبَةٌ”. B menunjuk ...|Tas|Pena|Penggaris|Papan tulis|حَقِيبَةٌ berarti tas.`,
+`alat|Membedakan|Di meja ada pena dan pensil. Pilih nama yang khusus berarti pensil.|قَلَمُ رَصَاصٍ|قَلَمٌ|سَبُّورَةٌ|حَقِيبَةٌ|قَلَمُ رَصَاصٍ berarti pensil.`,
+`alat|Situasi kelas|Guru menulis agar seluruh kelas dapat melihat. Permukaan yang dipakai disebut ...|سَبُّورَةٌ|مِمْحَاةٌ|حَقِيبَةٌ|مِسْطَرَةٌ|سَبُّورَةٌ berarti papan tulis.`,
+`pakaian|Pakaian|Untuk berangkat sekolah, Ali mengenakan kemeja. Pilih nama Arabnya.|قَمِيصٌ|سِرْوَالٌ|حِذَاءٌ|قُبَّعَةٌ|قَمِيصٌ berarti kemeja.`,
+`pakaian|Pakaian|Anak mengenakan benda ini di kaki sebelum sepatu. Kata Arab yang sesuai ialah ...|جَوْرَبٌ|حِذَاءٌ|قَمِيصٌ|قُبَّعَةٌ|جَوْرَبٌ berarti kaus kaki.`,
+`pakaian|Melengkapi|Lengkapi ungkapan “هَذَا ...” untuk menunjuk sepatu.|حِذَاءٌ|قُبَّعَةٌ|حَقِيبَةٌ|مِمْحَاةٌ|هَذَا حِذَاءٌ berarti ini sepatu.`,
+`pakaian|Dialog|A bertanya “مَا هَذِهِ؟” B menjawab “هَذِهِ قُبَّعَةٌ”. Mereka membicarakan ...|Topi|Celana|Kemeja|Sepatu|قُبَّعَةٌ berarti topi.`,
+`pakaian|Membedakan|Saat menyiapkan pakaian, Rina mencari celana, bukan kemeja. Pilih katanya.|سِرْوَالٌ|قَمِيصٌ|جَوْرَبٌ|حِذَاءٌ|سِرْوَالٌ berarti celana.`,
+`rumah|Ruangan|Adik hendak tidur. Pilih nama Arab ruangan yang sesuai.|غُرْفَةُ النَّوْمِ|غُرْفَةُ الْجُلُوسِ|غُرْفَةُ الدِّرَاسَةِ|الْفَصْلُ|غُرْفَةُ النَّوْمِ berarti kamar tidur.`,
+`rumah|Ruangan|Keluarga menerima tamu dan duduk bersama. Pilih ruang yang sesuai.|غُرْفَةُ الْجُلُوسِ|غُرْفَةُ النَّوْمِ|الْمَدْرَسَةُ|الْفَصْلُ|غُرْفَةُ الْجُلُوسِ adalah ruang duduk.`,
+`rumah|Benda rumah|Angin masuk melalui jendela kamar. Pilih kata Arab untuk jendela.|نَافِذَةٌ|بَابٌ|سَرِيرٌ|كُرْسِيٌّ|نَافِذَةٌ berarti jendela.`,
+`rumah|Dialog|Seorang anak bertanya “أَيْنَ السَّرِيرُ؟” Ia sedang mencari ...|Tempat tidur|Kursi|Meja|Pintu|السَّرِيرُ berarti tempat tidur.`,
+`rumah|Situasi rumah|Mira mengerjakan tugas di ruang belajar. Nama Arab ruang tersebut ialah ...|غُرْفَةُ الدِّرَاسَةِ|غُرْفَةُ النَّوْمِ|غُرْفَةُ الْجُلُوسِ|الْمَدْرَسَةُ|غُرْفَةُ الدِّرَاسَةِ berarti ruang belajar.`
+];
+const arabExam=arabExamRows.map((row,i)=>{
+  const p=row.split("|");
+  return makeQuestion(p[0],`exam-arab-${i}`,p[1],p[2],p[3],p.slice(4,7),p[7]);
+});
+
+/* Ujian mapel lama memilih soal dari setiap bab dengan proporsi seimbang.
+   ID sesi ujian terpisah dari latihan, dan pertanyaannya memakai konteks ujian. */
+function legacyExam(subject){
+  const chapters=subjects[subject].chapters.map(c=>c[0]);
+  const selected=[];
+  for(let i=0;i<20;i++){
+    const chapter=chapters[i%chapters.length];
+    const fact=legacyFacts[chapter][Math.floor(i/chapters.length)%10];
+    selected.push(makeQuestion(chapter,`exam-${subject}-${i}`,"Ujian semester",
+      `Pada ujian semester, pilih jawaban paling tepat untuk: ${fact[0].toLowerCase()}.`,
+      fact[1],fact.slice(2),`${fact[0]}: ${fact[1]}.`));
+  }
+  return selected;
+}
+const examBanks={fiqih:legacyExam("fiqih"),quran:legacyExam("quran"),akidah:legacyExam("akidah"),arab:arabExam};
+
+function validate(){
+  const ids=new Set();
+  for(const bank of [...Object.values(chapterBanks),...Object.values(examBanks)]){
+    if(bank.length<20)return false;
+    for(const q of bank){
+      if(ids.has(q.id)||!q.prompt||!q.explanation||q.options.length!==4||
+        new Set(q.options.map(x=>x.id)).size!==4||
+        new Set(q.options.map(x=>x.text)).size!==4||
+        q.options.filter(x=>x.id===q.key).length!==1)return false;
+      ids.add(q.id);
+    }
+  }
+  return ["sekolah","alat","pakaian","rumah"].every(c=>arabExam.filter(q=>q.chapter===c).length===5);
+}
+const banksValid=validate();
+const screens=["home","subjects","intro","exam-select","game","result"];
+const state={subject:null,chapter:null,mode:"practice",session:[],index:0,selected:null,score:0,wrong:[],wrongTopics:new Set(),remedial:false};
+const history=new Map();
+const letters=["A","B","C","D"];
+function shuffle(source){
+  const a=[...source];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a;
+}
+function navigate(page){
+  screens.forEach(s=>$(s+"-screen").hidden=s!==page);
+  $("header-home").hidden=page==="home";
+  $("app-error").hidden=true;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function error(message){$("app-error").textContent=message;$("app-error").hidden=false}
+function currentChapter(){return subjects[state.subject].chapters.find(c=>c[0]===state.chapter)}
+function selectSubject(key){
+  state.subject=key;state.chapter=null;
+  $("subjects-screen").classList.toggle("arab-subjects",key==="arab");
+  $("subject-title").classList.toggle("arab-heading",key==="arab");
+  $("subject-title").textContent=subjects[key].icon+" "+subjects[key].name;
+  const list=$("chapter-list");list.replaceChildren();
+  subjects[key].chapters.forEach((c,i)=>{
+    const button=document.createElement("button");
+    button.type="button";button.className="subject-card panel p-5 sm:p-6 text-left w-full min-h-32 bg-white"+(key==="arab"?" arab-chapter-card":"");
+    button.setAttribute("aria-label","Buka bab "+c[1]);
+    const number=document.createElement("span");number.className="block text-sm font-bold text-teal-700 mb-2";number.textContent="BAB "+(i+1);
+    const title=document.createElement("span");title.className="block font-extrabold text-xl mb-2";title.textContent=c[1];
+    if(key==="arab")title.classList.add("arabic-title");
+    const description=document.createElement("span");description.className="block text-sm leading-relaxed";description.textContent=c[2];
+    button.append(number,title,description);button.addEventListener("click",()=>selectChapter(c[0]));list.append(button);
+  });
+  navigate("subjects");
+}
+function selectChapter(id){
+  state.chapter=id;
+  const c=currentChapter();
+  $("intro-subject").textContent=subjects[state.subject].name;
+  $("intro-title").textContent=c[1];
+  $("intro-title").classList.toggle("arabic-title",state.subject==="arab");
+  $("intro-summary").textContent=c[2];
+  $("intro-goals").textContent=c[3];
+  $("reference-note").textContent=state.subject==="arab"
+    ?"Materi semester 1 berdasarkan cakupan buku Bahasa Arab MI kelas 2 Kemenag yang relevan. Pelajari pelafalan bersama guru."
+    :"Untuk lafal Arab, ayat, terjemahan, dan teks hadis yang tepat: rujuk buku Kemenag atau guru.";
+  navigate("intro");
+}
+/* Utamakan soal yang belum muncul; bila sisa kurang dari 20, isi dari siklus baru. */
+function chooseTwenty(bank,historyKey){
+  const seen=history.get(historyKey)||new Set();
+  let fresh=shuffle(bank.filter(q=>!seen.has(q.id)));
+  if(fresh.length<20){
+    const needed=20-fresh.length;
+    fresh=fresh.concat(shuffle(bank.filter(q=>seen.has(q.id))).slice(0,needed));
+    history.set(historyKey,new Set(fresh.map(q=>q.id)));
+  }else{
+    fresh=fresh.slice(0,20);
+    fresh.forEach(q=>seen.add(q.id));
+    history.set(historyKey,seen);
+  }
+  return shuffle(fresh).map(q=>({...q,options:shuffle(q.options)}));
+}
+function startSession(mode,key=state.subject){
+  if(!banksValid){error("Bank soal belum siap. Mohon periksa kembali isi soal.");return}
+  const bank=mode==="exam"?examBanks[key]:chapterBanks[state.chapter];
+  if(!bank||bank.length<20){error("Soal sesi ini belum cukup.");return}
+  state.subject=key;state.mode=mode;state.remedial=false;
+  state.session=chooseTwenty(bank,mode==="exam"?`exam:${key}`:`chapter:${key}:${state.chapter}`);
+  state.index=0;state.selected=null;state.score=0;state.wrong=[];state.wrongTopics=new Set();
+  navigate("game");renderQuestion();
+}
+function appendMixedText(parent,value){
+  const parts=value.split(/([\u0600-\u06FF][\u0600-\u06FF\sًٌٍَُِّْ؟]*)/g);
+  for(const part of parts){
+    if(!part)continue;
+    if(/[\u0600-\u06FF]/.test(part)){
+      const span=document.createElement("span");span.className="arabic";span.lang="ar";span.dir="rtl";span.textContent=part;parent.append(span);
+    }else parent.append(document.createTextNode(part));
+  }
+}
+function renderQuestion(){
+  const q=state.session[state.index];state.selected=null;
+  const total=state.session.length;
+  $("game-subject").textContent=subjects[state.subject].name+" • "+(state.remedial?"Remedial":state.mode==="exam"?"Ujian akhir semester 1":"Latihan bab");
+  $("game-title").textContent=state.remedial?"Coba Lagi Soal yang Salah":state.mode==="exam"?"Petualangan Ujian "+subjects[state.subject].name:currentChapter()[1];
+  $("game-title").classList.toggle("arabic-title",state.subject==="arab"&&state.mode!=="exam"&&!state.remedial);
+  $("question-number").textContent=(state.remedial?"Remedial: ":"")+"Soal "+(state.index+1)+" dari "+total;
+  $("live-score").textContent="Skor: "+state.score;
+  $("progress-fill").style.width=((state.index+1)/total*100)+"%";
+  $("progress-track").setAttribute("aria-valuemax",String(total));
+  $("progress-track").setAttribute("aria-valuenow",String(state.index+1));
+  $("question-topic").textContent=q.topic;
+  $("question-text").replaceChildren();appendMixedText($("question-text"),q.prompt);
+  $("feedback").hidden=true;$("next-question").hidden=true;
+  const answers=$("answers");answers.replaceChildren();
+  q.options.forEach((choice,i)=>{
+    const button=document.createElement("button");button.type="button";button.className="answer";
+    button.dataset.choiceId=choice.id;button.setAttribute("aria-label","Pilihan "+letters[i]+": "+choice.text);
+    const badge=document.createElement("strong");badge.className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 mr-3";badge.textContent=letters[i];
+    const text=document.createElement("span");appendMixedText(text,choice.text);
+    button.append(badge,text);button.addEventListener("click",()=>choose(choice.id));answers.append(button);
+  });
+}
+function choose(id){
+  if(state.selected!==null)return;
+  const q=state.session[state.index];state.selected=id;
+  const correct=id===q.key;
+  if(correct)state.score+=5;
+  else{state.wrong.push(q);state.wrongTopics.add(q.topic)}
+  $("live-score").textContent="Skor: "+state.score;
+  for(const button of $("answers").children){
+    button.disabled=true;
+    if(button.dataset.choiceId===q.key)button.classList.add("correct");
+    else if(button.dataset.choiceId===id)button.classList.add("wrong");
+  }
+  $("feedback").style.background=correct?"#e5f7ed":"#fff0ee";
+  $("feedback-heading").textContent=correct?"Hebat! Jawabanmu benar.":"Bagus, terus belajar! Yuk, pahami lagi.";
+  $("feedback-answer").replaceChildren();
+  appendMixedText($("feedback-answer"),"Jawaban yang benar: "+q.options.find(c=>c.id===q.key).text);
+  $("feedback-explanation").replaceChildren();appendMixedText($("feedback-explanation"),q.explanation);
+  $("feedback").hidden=false;$("next-question").hidden=false;$("next-question").focus();
+}
+function finish(){
+  const total=state.session.length,correct=state.score/5;
+  $("result-subject").textContent=subjects[state.subject].name+" • "+(state.remedial?"Remedial":state.mode==="exam"?"Ujian akhir semester 1":"Latihan bab");
+  $("result-title").textContent=state.remedial?"Hasil Coba Lagi Soal yang Salah":state.mode==="exam"?"Hasil Ujian "+subjects[state.subject].name:currentChapter()[1];
+  $("result-score").textContent=state.score+" / "+(total*5)+" poin";
+  $("result-counts").textContent="Benar: "+correct+" • Salah: "+(total-correct);
+  $("result-message").textContent=state.wrong.length
+    ?"Terus belajar, ya! Kamu bisa mencoba kembali soal yang salah."
+    :"Masya Allah, semua soal pada sesi ini benar!";
+  $("result-review").textContent=state.wrongTopics.size
+    ?"Pelajari kembali: "+[...state.wrongTopics].join(", ")+". Tanyakan kepada guru jika masih ragu."
+    :"Semua jawaban benar. Tetap ulangi materi bersama guru, ya!";
+  $("remedial-button").hidden=state.wrong.length===0;
+  $("retry-label").textContent=state.mode==="exam"?"ULANGI UJIAN":"ULANGI BAB";
+  $("other-label").textContent=state.mode==="exam"?"PILIH UJIAN LAIN":"PILIH BAB LAIN";
+  navigate("result");
+}
+function remedial(){
+  if(!state.wrong.length)return;
+  state.session=shuffle(state.wrong).map(q=>({...q,options:shuffle(q.options)}));
+  state.remedial=true;state.index=0;state.selected=null;state.score=0;state.wrong=[];state.wrongTopics=new Set();
+  navigate("game");renderQuestion();
+}
+document.querySelectorAll("[data-subject]").forEach(b=>b.addEventListener("click",()=>selectSubject(b.dataset.subject)));
+document.querySelectorAll("[data-exam]").forEach(b=>b.addEventListener("click",()=>startSession("exam",b.dataset.exam)));
+$("header-home").addEventListener("click",()=>navigate("home"));
+$("back-from-subjects").addEventListener("click",()=>navigate("home"));
+$("back-from-intro").addEventListener("click",()=>selectSubject(state.subject));
+$("intro-chapters").addEventListener("click",()=>selectSubject(state.subject));
+$("start-game").addEventListener("click",()=>startSession("practice"));
+$("open-exams").addEventListener("click",()=>navigate("exam-select"));
+$("back-from-exams").addEventListener("click",()=>navigate("home"));
+$("leave-game").addEventListener("click",()=>state.mode==="exam"?navigate("exam-select"):selectChapter(state.chapter));
+$("next-question").addEventListener("click",()=>{
+  if(state.selected===null)return;
+  if(state.index===state.session.length-1)finish();
+  else{state.index++;renderQuestion()}
+});
+$("retry-button").addEventListener("click",()=>startSession(state.mode,state.subject));
+$("remedial-button").addEventListener("click",remedial);
+$("other-button").addEventListener("click",()=>state.mode==="exam"?navigate("exam-select"):selectSubject(state.subject));
+$("result-home").addEventListener("click",()=>navigate("home"));
+navigate("home");
+if(!banksValid)error("Bank soal belum siap. Mohon periksa kembali isi soal.");
+</script>
+ 
+</body></html>
